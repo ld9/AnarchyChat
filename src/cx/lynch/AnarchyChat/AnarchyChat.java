@@ -10,7 +10,6 @@ public class AnarchyChat extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(dsl, this);
-		//DiscordSRV.api.subscribe(dsl);
 	}
 	
 	@Override

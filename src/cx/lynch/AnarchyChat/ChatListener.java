@@ -30,10 +30,8 @@ public class ChatListener implements Listener{
 		
 		String chatMessageUf = e.getMessage();
 		if (chatMessageUf.startsWith("!")) {
-			// Shout
 			shoutMessage(e);
 		} else {
-			// Local
 			localMessage(e);
 		}
 	}
