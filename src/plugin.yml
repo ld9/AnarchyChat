@@ -1,0 +1,4 @@
+main: cx.lynch.AnarchyChat.AnarchyChat
+name: AnarchyChat
+version: 1.0
+depend: [DiscordSRV]
