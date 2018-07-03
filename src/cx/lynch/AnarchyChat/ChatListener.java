@@ -1,70 +1,50 @@
 package cx.lynch.AnarchyChat;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import java.util.Map.Entry;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.DiscordSRV;
+import net.md_5.bungee.api.ChatColor;
 
-public class ChatListener implements Listener{
+public class ChatListener implements Listener {
 	public AnarchyChat plugin;
-	private String eventPlayer;
-	
+
 	public ChatListener(AnarchyChat plugin) {
 		this.plugin = plugin;
 	}
 
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
+		if (e.isCancelled()) {
+			return;
+		}
+
 		e.setCancelled(true);
-		
-		this.eventPlayer = e.getPlayer().getDisplayName();
-		
-		// Completely necessary for plugin functionality.
-		if(this.eventPlayer.equalsIgnoreCase("Dan_Lynch")) {
-			this.eventPlayer = ChatColor.GOLD + this.eventPlayer + ChatColor.RESET;
+
+		String m = e.getMessage();
+
+		Chatter chatter;
+		chatter = AnarchyChat.pcmap.get(e.getPlayer().getUniqueId());
+		if (chatter == null) {
+			e.getPlayer().sendMessage(ChatColor.RED
+					+ "> Unable to send message. Attempting to update your UUID's player instance. Re-log if this message persists.");
+			// Maybe do something here.
+			return;
 		}
-		
-		String chatMessageUf = e.getMessage();
-		if (chatMessageUf.startsWith("!")) {
-			shoutMessage(e);
-		} else {
-			localMessage(e);
-		}
-	}
-	
-	private void shoutMessage(AsyncPlayerChatEvent e) {
-		boolean discsent = false;
-		e.getPlayer().setFoodLevel(e.getPlayer().getFoodLevel() - 1);
-		
-		for (Player p : e.getRecipients()) {
-			String shoutMessage = "[" + ChatColor.DARK_GREEN + "G" + ChatColor.RESET + "]<" + this.eventPlayer + "> " + e.getMessage().substring(1);
-			p.sendMessage(shoutMessage);
-			if (!discsent) {
-				DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(shoutMessage));
-				discsent = true;
-			}
-		}
-	}
-	
-	private void localMessage(AsyncPlayerChatEvent e) {
-		for (Player p : e.getRecipients()) {
-			boolean sameWorld = e.getPlayer().getLocation().getWorld().getName().equals(p.getLocation().getWorld().getName());
-			if (sameWorld) {
-				int distance = (int) e.getPlayer().getLocation().distance(p.getLocation());
-				
-				if (distance < 150) {
-					p.sendMessage("[" + ChatColor.DARK_AQUA+ "L" + ChatColor.RESET + "]<"  + this.eventPlayer + "> " + e.getMessage());
-				} else if (p.hasPermission("anarchychat.seeall")) {
-					p.sendMessage("[" + ChatColor.DARK_AQUA+ "L#" + distance + ChatColor.RESET + "]<" + this.eventPlayer + "> " + e.getMessage());
+
+		if (m.startsWith(".")) {
+			for (Entry<String, ChatChannel> entry : AnarchyChat.channels.entrySet()) {
+				ChatChannel c = entry.getValue();
+				if (m.startsWith(c.name.toLowerCase(), 1) && c.members.contains(chatter)) {
+					c.chat(chatter, m.substring(c.name.length() + 1));
+				} else if (m.startsWith(c.abr.toLowerCase(), 1) && c.members.contains(chatter)) {
+					c.chat(chatter, m.substring(c.abr.length() + 1));
 				}
-			} else if (p.hasPermission("anarchychat.seeall")) {
-				p.sendMessage("[" + ChatColor.DARK_AQUA+ "L#" + e.getPlayer().getLocation().getWorld().getName()  + ChatColor.RESET + "]<" + this.eventPlayer + "> " + e.getMessage());
 			}
+		} else {
+			plugin.defaultChannel.chat(chatter, m);
 		}
 	}
-	
 }
