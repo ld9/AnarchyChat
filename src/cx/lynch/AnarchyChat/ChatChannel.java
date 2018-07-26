@@ -6,22 +6,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class ChatChannel {
-	public String name, abr;
+	public String name, abr, color;
 	public int range, cost;
+	public boolean default_channel;
 
-	private ChatColor color, gray = ChatColor.GRAY;
+	private ChatColor gray = ChatColor.GRAY;
 
 	public ArrayList<Chatter> members = new ArrayList<Chatter>();
 
-	public ChatChannel(String name, String abr, ChatColor color, int range, int cost) {
+	public ChatChannel(String name, String abr, String color, int range, int cost, boolean default_channel) {
 		this.name = name;
 		this.abr = abr;
+		this.default_channel = default_channel;
 		this.cost = cost;
 		this.color = color;
 		this.range = range;
 	}
+	
+	public boolean isDefault() {
+		return default_channel;
+	}
 
 	public void addChatter(Chatter c) {
+		System.out.println("New chatter " + c.getName() + " added to " + name);
 		this.members.add(c);
 	}
 
@@ -33,11 +40,14 @@ public class ChatChannel {
 	}
 	
 	public void broadcast(String m, Chatter b) {
+		System.out.println(m);
 		for (Chatter c : members) {
 			if (c.getPlayer().getLocation().distance(b.getPlayer().getLocation()) <= range) {
 				c.getPlayer().sendMessage(m);
 			} else if (b.getPlayer() == null) {
 				c.getPlayer().sendMessage(m);
+			} else if (c.getPlayer().hasPermission("anarchy.omnipotent")) {
+				c.getPlayer().sendMessage(ChatColor.RED + "[" + ChatColor.GOLD + "*" + ChatColor.RED + "] " + ChatColor.RESET + m);
 			}
 		}
 	}
@@ -51,7 +61,7 @@ public class ChatChannel {
 	}
 
 	public String buildMessage(Chatter c, String m) {
-		return gray + "[" + color + abr + gray + "] " + (c.getColor() == null ? "" : c.getColor()) + c.getName() + gray + ": " + ChatColor.RESET + m.trim();
+		return gray + "[" + color + abr + gray + "] " + (c.getPrefix() == null ? "" : c.getPrefix()) + (c.getColor() == null ? "" : c.getColor()) + c.getName() + gray + ": " + ChatColor.RESET + m.trim();
 	}
 
 	public void send(Chatter c, String m) {
