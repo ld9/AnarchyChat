@@ -5,6 +5,6 @@
 	<classpathentry kind="lib" path="C:/Users/dlync/Desktop/spigot/plugins/DiscordSRV-Build-1.16.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/dlync/Desktop/spigot/Spigot/Spigot-API/target/spigot-api-1.12.2-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="C:/Users/dlync/Desktop/spigot/Spigot/Spigot-Server/target/spigot-1.12.2-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/dlync/Desktop/boat.jar"/>
+	<classpathentry kind="lib" path="C:/Users/dlync/Desktop/spigot/plugins/boat.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

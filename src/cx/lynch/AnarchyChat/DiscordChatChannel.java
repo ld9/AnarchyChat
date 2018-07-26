@@ -1,15 +1,14 @@
 package cx.lynch.AnarchyChat;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 
 public class DiscordChatChannel extends ChatChannel {
 
-	public DiscordChatChannel(String name, String abr, ChatColor color, int range, int cost) {
-		super(name, abr, color, range, cost);
+	public DiscordChatChannel(String name, String abr, String color, int range, int cost, boolean def) {
+		super(name, abr, color, range, cost, def);
 	}
 
 	public void send(Chatter c, String m) {
