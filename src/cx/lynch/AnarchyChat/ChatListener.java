@@ -1,5 +1,6 @@
 package cx.lynch.AnarchyChat;
 
+import java.sql.SQLException;
 import java.util.Map.Entry;
 
 import org.bukkit.event.EventHandler;
@@ -16,7 +17,7 @@ public class ChatListener implements Listener {
 	}
 
 	@EventHandler
-	public void onChat(AsyncPlayerChatEvent e) {
+	public void onChat(AsyncPlayerChatEvent e) throws SQLException {
 		if (e.isCancelled()) {
 			return;
 		}
@@ -32,6 +33,7 @@ public class ChatListener implements Listener {
 			e.getPlayer().sendMessage(ChatColor.RED
 					+ "> Unable to send message. Attempting to update your UUID's player instance. Re-log if this message persists.");
 			// Maybe do something here.
+			AnarchyChat.ph.refreshPlayer(e.getPlayer());
 			return;
 		}
 
@@ -45,11 +47,11 @@ public class ChatListener implements Listener {
 					c.chat(chatter, m.substring(c.abr.length() + 1));
 					return;
 				}
-				if (!notify) {
-					e.getPlayer().sendMessage(ChatColor.RED
-							+ "> Unable to send message. This chat channel either does not exist, or you have no permission to speak in it.");
-					notify = true;
-				}
+			}
+			if (!notify) {
+				e.getPlayer().sendMessage(ChatColor.RED
+						+ "> Unable to send message. This chat channel either does not exist, or you have no permission to speak in it.");
+				notify = true;
 			}
 		} else {
 			AnarchyChat.defaultChannel.chat(chatter, m);

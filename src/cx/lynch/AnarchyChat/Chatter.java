@@ -10,13 +10,13 @@ public class Chatter {
 	public Player player;
 	public boolean seeNicks;
 
-	public Chatter(AnarchyChat plugin, UUID uuid, String nick, boolean seeNicks, String color, String prefix) {
+	public Chatter(Player p, UUID uuid, String nick, boolean seeNicks, String color, String prefix) {
 		this.uuid = uuid;
 		this.prefix = prefix;
 		this.nickname = nick;
 		this.color = color;
 		this.seeNicks = seeNicks;
-		this.player = plugin.getServer().getPlayer(uuid);
+		this.player = p;
 		this.name = this.player.getName();
 		this.prefix = prefix;
 	}

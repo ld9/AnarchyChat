@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -26,12 +27,12 @@ public class AnarchyChat extends JavaPlugin {
 	public ArrayList<ChatChannel> defaultChannels = new ArrayList<ChatChannel>();
 	public static ChatChannel defaultChannel;
 	
-	public Connection connection;
+	public static Connection connection;
 	public Statement statement;
 	public FileConfiguration config;
 	public String sqlserver, sqlport, sqluser, sqldb, sqlpass, serverName;
 	
-	
+	public static PlayerHandler ph = new PlayerHandler();
 
 	@Override
 	public void onEnable() {
@@ -55,7 +56,7 @@ public class AnarchyChat extends JavaPlugin {
 		}
 		
 		getServer().getPluginManager().registerEvents(dsl, this);
-		getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new InboundMessageListener(), this);
 
 		try {
@@ -74,6 +75,10 @@ public class AnarchyChat extends JavaPlugin {
 		return channels;
 	}
 	
+	public static void updatePlayerScore(Player p, double amount) throws SQLException {
+		ph.updatePlayerScore(p, amount);
+	}
+	
 	public static ArrayList<Chatter> getChattersInChannel(ChatChannel c) {
 		ArrayList<Chatter> res = new ArrayList<Chatter>();
 		for(Entry<UUID, Chatter> e : pcmap.entrySet()) {
@@ -85,7 +90,7 @@ public class AnarchyChat extends JavaPlugin {
 	
 	protected void registerDatabaseChannels() throws SQLException {
 		// query for channels.
-		PreparedStatement s = this.connection.prepareStatement("select * from chat_channels");
+		PreparedStatement s = AnarchyChat.connection.prepareStatement("select * from chat_channels");
 		ResultSet rs = s.executeQuery();
 		
 		while(rs.next()) {
