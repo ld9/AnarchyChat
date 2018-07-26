@@ -20,7 +20,8 @@ public class ChatListener implements Listener {
 		if (e.isCancelled()) {
 			return;
 		}
-
+		
+		boolean notify = false;
 		e.setCancelled(true);
 
 		String m = e.getMessage();
@@ -39,12 +40,19 @@ public class ChatListener implements Listener {
 				ChatChannel c = entry.getValue();
 				if (m.startsWith(c.name.toLowerCase(), 1) && c.members.contains(chatter)) {
 					c.chat(chatter, m.substring(c.name.length() + 1));
+					return;
 				} else if (m.startsWith(c.abr.toLowerCase(), 1) && c.members.contains(chatter)) {
 					c.chat(chatter, m.substring(c.abr.length() + 1));
+					return;
+				}
+				if (!notify) {
+					e.getPlayer().sendMessage(ChatColor.RED
+							+ "> Unable to send message. This chat channel either does not exist, or you have no permission to speak in it.");
+					notify = true;
 				}
 			}
 		} else {
-			plugin.defaultChannel.chat(chatter, m);
+			AnarchyChat.defaultChannel.chat(chatter, m);
 		}
 	}
 }
