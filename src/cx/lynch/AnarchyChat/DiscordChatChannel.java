@@ -11,12 +11,12 @@ public class DiscordChatChannel extends ChatChannel {
 		super(name, abr, color, range, cost, def);
 	}
 
-	public void send(Chatter c, String m) {
+	public void send(Chatter c, String mn, String m) {
 		ChannelChatEvent cce = new ChannelChatEvent(c, m, this);
 		Bukkit.getPluginManager().callEvent(cce);
 		
 		m = buildMessage(c, m);
-		broadcast(m, c);
+		broadcast(m, mn, c);
 		broadcastRawDiscord(m);
 	}
 

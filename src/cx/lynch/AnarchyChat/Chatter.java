@@ -29,8 +29,16 @@ public class Chatter {
 		return prefix;
 	}
 
+	public boolean seeNicks() {
+		return seeNicks; 
+	}
+	
 	public String getName() {
 		return name;
+	}
+	
+	public String getNickname() {
+		return (nickname != null ? nickname : name);
 	}
 
 	public String getColor() {

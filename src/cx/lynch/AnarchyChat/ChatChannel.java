@@ -39,9 +39,16 @@ public class ChatChannel {
 		}
 	}
 	
-	public void broadcast(String m, Chatter b) {
-		System.out.println(m);
+	public void broadcast(String mraw, String mNoNick, Chatter b) {
+		System.out.println(mNoNick);
+		String m;
+		
 		for (Chatter c : members) {
+			if(c.seeNicks()) {
+				m = mraw;
+			} else {
+				m = mNoNick;
+			}
 			if (c.getPlayer().getLocation().distance(b.getPlayer().getLocation()) <= range) {
 				c.getPlayer().sendMessage(m);
 			} else if (b.getPlayer() == null) {
@@ -61,6 +68,10 @@ public class ChatChannel {
 	}
 
 	public String buildMessage(Chatter c, String m) {
+		return gray + "[" + color + abr + gray + "] " + (c.getPrefix() == null ? "" : c.getPrefix()) + (c.getColor() == null ? "" : c.getColor()) + "^" + c.getNickname() + gray + ": " + ChatColor.RESET + m.trim();
+	}
+	
+	public String buildMessageNoNick(Chatter c, String m) {
 		return gray + "[" + color + abr + gray + "] " + (c.getPrefix() == null ? "" : c.getPrefix()) + (c.getColor() == null ? "" : c.getColor()) + c.getName() + gray + ": " + ChatColor.RESET + m.trim();
 	}
 
@@ -68,7 +79,7 @@ public class ChatChannel {
 		ChannelChatEvent cce = new ChannelChatEvent(c, m, this);
 		Bukkit.getPluginManager().callEvent(cce);
 		if (!cce.isCancelled())
-			broadcast(buildMessage(c, m), c);
+			broadcast(buildMessage(c, m), buildMessageNoNick(c,m), c);
 	}
 
 	public void chat(Chatter c, String m) {
